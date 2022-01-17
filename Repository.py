@@ -2,8 +2,8 @@ import sqlite3
 
 
 class Repository:
-    def __init__(self):
-        self.conn = sqlite3.connect("Output.db")
+    def __init__(self,path):
+        self.conn = sqlite3.connect(path)
 
     def _close(self):
         self.conn.commit()

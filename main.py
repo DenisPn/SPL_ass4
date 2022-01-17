@@ -4,13 +4,13 @@ import sqlite3
 import io
 import os
 from Repository import Repository
+import sys
 
 if os.path.isfile("Output.db") is True:
     os.remove("Output.db")
 
-repo = Repository()
+repo = Repository(sys.argv[2])
 repo.create_tables()
-
 
 class Hats:
     def __init__(self, conn):
@@ -108,7 +108,7 @@ Suppliers = Suppliers(repo.conn)
 hatList = []
 supplierList = []
 orderList = []
-with open("config.txt", "r") as con:
+with open(sys.argv[0], "r") as con:
     i = 0
     numberOfHats = 0
     numberOfSuppliers = 0
@@ -125,7 +125,7 @@ with open("config.txt", "r") as con:
                 supplierInfo = line.split(',')
                 supplierList.append(Supplier(supplierInfo[0], supplierInfo[1][:-1]))
         i += 1
-with open("orders.txt", "r") as ord:
+with open(sys.argv[1], "r") as ord:
     for line in ord:
         orderInfo = line.split(',')
         orderList.append([orderInfo[0], orderInfo[1][:-1]])
