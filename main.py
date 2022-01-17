@@ -100,6 +100,32 @@ class Order:
         self.location = location
         self.id = id
 
+hatList = []
+supplierList = []
+orderList = []
+with open("config.txt", "r") as con:
+    i = 0
+    numberOfHats = 0
+    numberOfSuppliers = 0
+    for line in con:
+        if i == 0:
+            numbers = line.split(',')
+            numberOfHats = int(numbers[0])
+            numberOfSuppliers = int(numbers[1])
+        else:
+            if i <= numberOfHats:
+                hatInfo = line.split(',')
+                hatList.append(Hat(hatInfo[0], hatInfo[1], hatInfo[2], hatInfo[3]))
+            else:
+                supplierInfo = line.split(',')
+                supplierList.append(Supplier(supplierInfo[0], supplierInfo[1]))
+        i += 1
+i = 0
+with open("orders.txt", "r") as ord:
+    for line in ord:
+        orderInfo = line.split(',')
+        orderList.append(Order(i, orderInfo[0], orderInfo[1]))
+        i += 1
 
 order_id_tracker = 1
 Orders1 = Orders(repo.conn)
