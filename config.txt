@@ -1,9 +1,9 @@
 10,5
-1,olives,1,10
+1,olives,3,10
 2,mushrooms,2,20
 3,mushrooms,1,20
 4,tomatoes,2, 10
-5,olives,3,5
+5,olives,1,5
 6,garlic,1,10
 7,lettuce,4,5
 8,hats,4,5

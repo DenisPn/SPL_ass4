@@ -5,11 +5,11 @@ import io
 import os
 from Repository import Repository
 
-if os.path.isfile("Output.db") is False:
-    repo = Repository()
-    repo.create_tables()
-else:
-    repo = Repository()
+if os.path.isfile("Output.db") is True:
+    os.remove("Output.db")
+
+repo = Repository()
+repo.create_tables()
 
 
 class Hats:
@@ -100,6 +100,11 @@ class Order:
         self.location = location
         self.id = id
 
+
+Orders = Orders(repo.conn)
+Hats = Hats(repo.conn)
+Suppliers = Suppliers(repo.conn)
+
 hatList = []
 supplierList = []
 orderList = []
@@ -115,31 +120,30 @@ with open("config.txt", "r") as con:
         else:
             if i <= numberOfHats:
                 hatInfo = line.split(',')
-                hatList.append(Hat(hatInfo[0], hatInfo[1], hatInfo[2], hatInfo[3]))
+                hatList.append(Hat(hatInfo[0], hatInfo[1], hatInfo[2], hatInfo[3][:-1]))
             else:
                 supplierInfo = line.split(',')
-                supplierList.append(Supplier(supplierInfo[0], supplierInfo[1]))
+                supplierList.append(Supplier(supplierInfo[0], supplierInfo[1][:-1]))
         i += 1
-i = 0
 with open("orders.txt", "r") as ord:
     for line in ord:
         orderInfo = line.split(',')
-        orderList.append(Order(i, orderInfo[0], orderInfo[1]))
-        i += 1
+        orderList.append([orderInfo[0], orderInfo[1][:-1]])
 
+for supplier in supplierList:
+    Suppliers.insert(supplier)
+for hat in hatList:
+    Hats.insert(hat)
 order_id_tracker = 1
-Orders1 = Orders(repo.conn)
-Hats1 = Hats(repo.conn)
-Suppliers = Suppliers(repo.conn)
-oparsedOrders = [["myHouse", "none"]]
+
 summery = open("Summery.txt", "w+")
-for order_req in oparsedOrders:
-    hat = Hats1.try_order(order_req[1])
+for order_req in orderList:
+    hat = Hats.try_order(order_req[1])
     if hat.id is not None:
-        Hats1.order_one(hat.id)
+        Hats.order_one(hat.id)
         supplier = Suppliers.find(hat.supplier)
-        order = Order(0, order_req[0], hat.topping)
-        Orders1.insert(order)
+        order = Order(order_id_tracker, order_req[0], hat.topping)
+        Orders.insert(order)
         order_id_tracker = order_id_tracker + 1
         summery.write("{topping},{supplier},{location}\n".format(topping=hat.topping, supplier=supplier.name,
                                                                  location=order_req[0]))
